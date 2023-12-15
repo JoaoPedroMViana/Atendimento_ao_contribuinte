@@ -1,10 +1,19 @@
 <?php
+  include('protecao.php');
   include('Mysql.php');
   define('HOST', 'localhost');
   define('DB','prefeitura');
   define('USER', 'root');
   define('PASS', '');
   $pdo = MySql::connect();
+
+  if(isset($_SESSION['msg_success_cadastro'])){
+    unset($_SESSION['msg_success_cadastro']);
+    session_write_close();
+  }else if(isset($_SESSION['msg_error_cadastro'])){
+      unset($_SESSION['msg_error_cadastro']);
+      session_write_close();
+  }
 
   //gerenciar processo:
   if(isset($_GET['pesquisar_numero'])){
@@ -32,16 +41,22 @@
     $prazo = $_POST['prazo_processo'];
 
     $sql = $pdo->prepare("UPDATE `processos` SET `descricao` = ?, `data_de_registro` = ?, `prazo` = ?, `id_pessoa` = ? WHERE `numero` = $numero_processo");
-    $sql->execute(array($descricao, $data_processo, $prazo, $id_demandante));
+
+    try{
+      $sql->execute(array($descricao, $data_processo, $prazo, $id_demandante));
+      $_SESSION['msg_success_gerenciar'] = 'Processo editado.';
+    }catch(Exception $e){
+      $_SESSION['msg_error_gerenciar'] = 'Erro ao editar processo.';
+    }
+    
   }
 
   if(isset($_POST['excluir_processo']) && isset($_GET['consultar_numero'])){
     if($conteudo == null){
       
     }else{
-      $sql = $pdo->prepare("DELETE FROM `processos` WHERE `numero` = ?");
-      $sql->execute(array($numero_processo));
-    }
+      $_SESSION['modal_excluir-processo'] = 'true';
+    } 
   }
 
   // gerenciar pessoa:
@@ -79,15 +94,20 @@
     $complemento = $_POST['complemento_demandante'];
   
     $sql = $pdo->prepare("UPDATE `pessoas` SET `nome` = ?, `data_nascimento` = ?, `cpf` = ?, `sexo` = ?, `cidade` = ?, `bairro` = ?, `rua` = ?, `numero` = ?, `complemento` = ? WHERE `id` = $id_pessoa");
-    $sql->execute(array($nome, $data_nascimento, $cpf, $sexo, $cidade, $bairro, $rua, $numero, $complemento));
+
+    try{
+      $sql->execute(array($nome, $data_nascimento, $cpf, $sexo, $cidade, $bairro, $rua, $numero, $complemento));
+      $_SESSION['msg_success_gerenciar'] = 'Pessoa editada.';
+    }catch(Exception $e){
+      $_SESSION['msg_error_gerenciar'] = 'Erro ao editar pessoa.';
+    }
   }
 
   if(isset($_POST['excluir_pessoa']) && isset($_GET['consultar_id'])){
     if($conteudo == null){
       
     }else{
-      $sql = $pdo->prepare("DELETE FROM `pessoas` WHERE `id` = ?");
-      $sql->execute(array($id_pessoa));
+      $_SESSION['modal_excluir-pessoa'] = 'true';
     }
   }
 ?>
@@ -99,7 +119,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gerenciar</title>
     <link href="src/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="shortcut icon" href="src/img/Brasao_Sao_Leopoldo.ico" type="image/x-icon">
   </head>
   <body class="overflow-hidden">
     <nav class="p-3 navbar navbar-expand-lg bg-dark " data-bs-theme="dark">
@@ -117,7 +139,7 @@
                 </div>
             </div>
             <div>
-                <a class="text-light"href="index.php">
+                <a id="sair" class="text-light"href="sair.php">
                     <i class="bi bi-box-arrow-right"> sair</i>
                 </a>
             </div>
@@ -136,16 +158,42 @@
                         </div>
                     </form>
                     <div class="container h-100">
-                        <img class="img-thumbnail h-50 mt-4" src="img\logoPrefeitura.png" alt="Logo Prefeitura">
+                        <img class="img-thumbnail h-50 mt-4" src="src\img\logoPrefeitura.png" alt="Logo Prefeitura">
                     </div>
             </div>
-            <div class="col-8">
+            <div class="col-8  position-relative">
               <?php
                 if(isset($_GET['pessoaG'])){
-                  include('gerPessoa.php');
-                    
+                  if(isset($_SESSION['msg_success_gerenciar'])){
+                    unset($_SESSION['msg_success_gerenciar']);
+                    session_write_close();
+                    include('gerPessoa.php');
+                  }else if(isset($_SESSION['msg_error_gerenciar'])){
+                    unset($_SESSION['msg_error_gerenciar']);
+                    session_write_close();
+                    include('gerPessoa.php');
+                  }else if(isset($_SESSION['modal_excluir-pessoa'])){
+                    $_SESSION['modal_excluir-pessoa'] ='false';
+                    include('gerPessoa.php');
+                  }else{
+                    include('gerPessoa.php');
+                  } 
                 }else if(isset($_GET['processoG'])){
-                  include('gerProcesso.php');
+                  if(isset($_SESSION['msg_success_gerenciar'])){
+                    unset($_SESSION['msg_success_gerenciar']);
+                    session_write_close();
+                    include('gerProcesso.php');
+                  }else if(isset($_SESSION['msg_error_gerenciar'])){
+                    unset($_SESSION['msg_error_gerenciar']);
+                    session_write_close();
+                    include('gerProcesso.php');
+                  }else if(isset($_SESSION['modal_excluir-processo'])){
+                    $_SESSION['modal_excluir-processo'] ='false';
+                    include('gerProcesso.php');
+                  }else{
+                    include('gerProcesso.php');
+                  }
+                  
       
                 }else if(isset($_GET['pesquisar_id']) || isset($_GET['excluir_pessoa']) || isset($_POST['gerPessoa_enviar'])){
                   include('gerPessoa.php');
@@ -161,6 +209,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script>
+        let sair = document.getElementById('sair');
+        sair.addEventListener('click', function(){
+        sessionStorage.setItem('logout', 'logout');
+        });
+    </script>
+    <script>
       $("#gerenciar_pessoa").on("click", 
         function tirarDisable(){
           $("#nome_demandante, #data_demandante, #cpf_demandante, #sexo_demandante, #cidade_demandante, #bairro_demandante, #rua_demandante, #numero_demandante, #complemento_demandante, #gerPessoa_enviar").removeAttr("disabled");
@@ -172,11 +226,20 @@
           $("#demandante_processo, #descricao_processo, #data_atual, #prazo_processo, #processo_enviar").removeAttr("disabled");
         }
       )
+      
+
       <?php
         if($gerenciarBotao){
-          echo '$("#gerenciar_processo, #gerenciar_pessoa").removeAttr("disabled");';
+          echo '$("#gerenciar_processo, #gerenciar_pessoa, #excluir_pessoa, #excluir_processo").removeAttr("disabled");';
+        }
+        if(isset($_POST['excluir_pessoa']) || $_SESSION['modal_excluir-pessoa'] == 'true'){
+          echo '$("#container-modal-pessoa").fadeIn("1500");$("#modal-excluir-pessoa").fadeIn("2400");';
+        }
+        if(isset($_POST['excluir_processo']) || $_SESSION['modal_excluir-processo'] == 'true'){
+          echo '$("#container-modal-processo").fadeIn("1500");$("#modal-excluir-processo").fadeIn("2400");';
         }
       ?>
+
     </script>
   </body>
 </html>

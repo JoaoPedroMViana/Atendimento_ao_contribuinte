@@ -7,7 +7,8 @@
         </div>
     </div>
 </form>
-<div class="h-50 overflow-auto mx-2 bg-light rounded ">
+
+<div class="h-400 overflow-auto mx-2 bg-light rounded ">
     <table class="table table-striped table-bordered table-hover">
         <?php 
             if(isset($_POST['procurar_nome'])&&$_POST['procurar_nome'] != null){
@@ -17,16 +18,17 @@
         ?>
         <thead>
             <tr class="table-dark">
-            <th scope="col">Id</th>
-            <th scope="col">Nome</th>
-            <th scope="col">Data nascimento</th>
-            <th scope="col">CPF</th>
-            <th scope="col">Sexo</th>
-            <th scope="col">Cidade</th>
-            <th scope="col">Bairro</th>
-            <th scope="col">Rua</th>
-            <th scope="col">Número</th>
-            <th scope="col">Complemento</th>
+            <th class="p-1"scope="col">Id</th>
+            <th class="p-1"scope="col">Nome</th>
+            <th class="p-1"scope="col">Data nascimento</th>
+            <th class="p-1"scope="col">CPF</th>
+            <th class="p-1"scope="col">Sexo</th>
+            <th class="p-1"scope="col">Cidade</th>
+            <th class="p-1"scope="col">Bairro</th>
+            <th class="p-1"scope="col">Rua</th>
+            <th class="p-1"scope="col">N°</th>
+            <th class="p-1"scope="col">Compl.</th>
+            <th class="p-0"scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -42,16 +44,60 @@
                         foreach($conteudo as $key => $value){
                             echo '<tr>
                             <th scope="row">'.$value['0'].'</th>
-                            <td>'.$value['1'].'</td>
-                            <td>'.$value['2'].'</td>
-                            <td>'.$value['3'].'</td>
-                            <td>'.$value['4'].'</td>
-                            <td>'.$value['5'].'</td>
-                            <td>'.$value['6'].'</td>
-                            <td>'.$value['7'].'</td>
-                            <td>'.$value['8'].'</td>
-                            <td>'.$value['9'].'</td>
-                            </tr>';
+                            <td class="align-middle">'.$value['1'].'</td>
+                            <td class="align-middle">'.$value['2'].'</td>
+                            <td class="align-middle">'.$value['3'].'</td>
+                            <td class="align-middle">'.$value['4'].'</td>
+                            <td class="align-middle">'.$value['5'].'</td>
+                            <td class="align-middle">'.$value['6'].'</td>
+                            <td class="align-middle">'.$value['7'].'</td>
+                            <td class="align-middle">'.$value['8'].'</td>
+                            <td class="align-middle">'.$value['9'].'</td>';
+                            echo '
+                                <td class="d-flex flex-column gap align-items-center p-1">
+                                    <a href="http://localhost/Projeto_prefeitura/gerenciar.php?consultar_id='.$value['0'].'&pesquisar_id=pesquisar" type="button" class="btn btn-warning mt-2">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form method="POST">
+                                    <input value="'.$value['0'].'" type="hidden" name="excluir_pessoa-consulta" id="excluir_pessoa-consulta">
+                                    <button name="botao-excluir-pessoa" id="botao-excluir-pessoa" type="submit" class="btn btn-danger mb-2">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </td></tr>';
+                        }
+                    }
+                }else{
+                    $sql = $pdo->prepare("SELECT * FROM `pessoas` ORDER BY `nome` ASC");
+                    $sql->execute();
+                    $conteudo = $sql->fetchAll();
+                    if($conteudo == null){
+
+                    }else{
+                        foreach($conteudo as $key => $value){
+                            echo '<tr>
+                            <th scope="row">'.$value['0'].'</th>
+                            <td class="align-middle">'.$value['1'].'</td>
+                            <td class="align-middle">'.$value['2'].'</td>
+                            <td class="align-middle">'.$value['3'].'</td>
+                            <td class="align-middle">'.$value['4'].'</td>
+                            <td class="align-middle">'.$value['5'].'</td>
+                            <td class="align-middle">'.$value['6'].'</td>
+                            <td class="align-middle">'.$value['7'].'</td>
+                            <td class="align-middle">'.$value['8'].'</td>
+                            <td class="align-middle">'.$value['9'].'</td>';
+                            echo '
+                                <td class="d-flex flex-column gap align-items-center p-1">
+                                    <a href="http://localhost/Projeto_prefeitura/gerenciar.php?consultar_id='.$value['0'].'&pesquisar_id=pesquisar" type="button" class="btn btn-warning mt-2">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form method="POST">
+                                        <input value="'.$value['0'].'" type="hidden" name="excluir_pessoa-consulta" id="excluir_pessoa-consulta">
+                                        <button name="botao-excluir-pessoa" id="botao-excluir-pessoa" type="submit" class="btn btn-danger mb-2">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </td></tr>';
                         }
                     }
                 }

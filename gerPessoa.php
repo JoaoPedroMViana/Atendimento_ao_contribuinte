@@ -1,3 +1,60 @@
+<?php
+    if(isset($_SESSION['modal_excluir-processo'])){
+        $_SESSION['modal_excluir-processo'] ='false';
+    }
+    if(isset($_POST['cancelar-modal-pessoa'])){
+        $_SESSION['modal_excluir-pessoa'] ='false';
+    }else if(isset($_POST['confirmar-modal-pessoa'])){
+        $sql = $pdo->prepare("DELETE FROM `pessoas` WHERE `id` = ?");
+        try{
+            $sql->execute(array($id_pessoa));
+            $_SESSION['modal_excluir-pessoa'] ='false';
+            $_SESSION['msg_success_gerenciar'] = 'Pessoa excluida.';
+            unset($_GET['consultar_id']);
+            unset($nome);
+            unset($data);
+            unset($cpf);
+            unset($sexo);
+            unset($cidade);
+            unset($bairro);
+            unset($rua);
+            unset($numero);
+            unset($complemento);
+        }catch(Exception $e){
+            $_SESSION['modal_excluir-pessoa'] ='false';
+            $_SESSION['msg_error_gerenciar'] = 'Erro ao excluir pessoa.';
+        }
+    }
+    if(isset($_SESSION['modal_excluir-pessoa']) && $_SESSION['modal_excluir-pessoa'] == 'true'){
+        echo '
+        <div id="container-modal-pessoa" class="absolute z10">
+            <div id="modal-excluir-pessoa" class="modal-excluir">
+                <div class="header">
+                    <h5>Excluir pessoa</h5>
+                </div>
+                <div class="body">
+                    <p>Deseja excluir está pessoa?</p>
+                </div>  
+                <form method="POST" class="footer">
+                    <button type="submit" name="confirmar-modal-pessoa" value="confirmar-modal-pessoa" class="btn btn-success">Confirmar</button>
+                    <button type="submit" name="cancelar-modal-pessoa" value="cancelar-modal-pessoa" class="btn btn-danger">Cancelar</button>
+                </form>
+            </div>
+        </div>
+        '
+        ;
+    }
+
+?>
+<div class="w100 gap d-flex position-absolute top-0 m-5 mt-4 flex-row justify-content-center">
+        <?php
+            if(isset($_SESSION['msg_success_gerenciar'])){
+                echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_gerenciar'].'</p>';
+            }else if(isset($_SESSION['msg_error_gerenciar'])){
+                echo '<p class="alert alert-danger p-2">'.$_SESSION['msg_error_gerenciar'].'</p>';
+            }
+        ?>
+</div>
 <section class="container text-light">
     <div class="row mt-4">
         <div class="col-6 mx-5 border-bottom d-flex">
@@ -15,7 +72,7 @@
                                 
                             }
                         ?>
-                       
+                        
                     </select>
                     <div class="input-group-prepend">
                         <button class="btn btn-success border border-white h-100 text-light" type="submit" name="pesquisar_id"value="pesquisar"><i class="bi bi-search"></i></button>
@@ -23,12 +80,12 @@
                 </div>
             </form>
         </div>
-        <div class="col-4 mx-4 d-flex justify-content-end">
+        <div class="col-4 mx-4 d-flex justify-content-end z9">
             <div class= mx-3>
                 <button id="gerenciar_pessoa" type="button" class="btn btn-warning" disabled><i class="bi bi-pencil-square"> Gerenciar</i></button>
             </div>
             <form method="post">
-                <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_pessoa"value="excluir">
+                <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_pessoa" id="excluir_pessoa"value="excluir"disabled>
             </form>
         </div>
         <div class="col-9 mt-2">
@@ -82,3 +139,27 @@
         </div>
     </div>
 </section>
+<script>
+    
+    let input_cpf = document.getElementById('cpf_demandante');
+
+    input_cpf.addEventListener('keypress', function(){
+        if(input_cpf.value.length == 3 || input_cpf.value.length == 7){
+            input_cpf.value += ".";
+        }else if(input_cpf.value.length == 11){
+            input_cpf.value += "-";
+        }
+    });
+
+    input_cpf.addEventListener('change', function(){
+        if(/^[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}$/.test(input_cpf.value)){
+            input_cpf.style = "outline: green 1.5px solid;";
+            input_cpf.classList.remove('invalido');
+            input_cpf.classList.add('valido');
+        }else{
+            input_cpf.style = "outline: red 1px solid;";
+            input_cpf.classList.remove('valido');
+            input_cpf.classList.add('invalido');
+        }
+    });
+</script>

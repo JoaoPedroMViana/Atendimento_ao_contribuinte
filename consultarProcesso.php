@@ -7,10 +7,11 @@
         </div>
     </div>
 </form>
-<div class="h-50 overflow-auto mx-2 bg-light rounded ">
-    <table class="table table-striped table-bordered table-hover table-responsive">
+
+<div class="overflow-auto mx-2 bg-light rounded h-400">
+    <table class="table table-striped table-bordered table-hover">
         <?php 
-            if(isset($_POST['procurar_numero'])&&$_POST['procurar_numero'] != null){
+            if(isset($_POST['procurar_numero']) && $_POST['procurar_numero'] != null){
                 $numero = $_POST['procurar_numero'];
                 echo '<caption class="mx-3">Lista de processos com : "'.$numero.'" no número. </caption>';
             }
@@ -22,6 +23,7 @@
             <th scope="col">Data de Registro</th>
             <th scope="col">Prazo</th>
             <th scope="col">Demandante</th>
+            <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -37,23 +39,72 @@
                         foreach($conteudo as $key => $value){
                             echo '<tr>
                             <th scope="row">'.$value['0'].'</th>
-                            <td>'.$value['1'].'</td>
-                            <td>'.$value['2'].'</td>
-                            <td>'.$value['3'].'</td>';
+                            <td class="align-middle">'.$value['1'].'</td>
+                            <td class="align-middle">'.$value['2'].'</td>
+                            <td class="align-middle">'.$value['3'].'</td>';
                             $id_demandante = $value['4'];
                             $sqlNome = $pdo->prepare("SELECT `nome` FROM `pessoas` WHERE `id` = ?");
                             $sqlNome->execute(array($id_demandante));
                             $nome_id = $sqlNome->fetchAll(); 
                                 if($nome_id == null){
-
+                                    echo '<td></td>';
                                 }else{
                                     echo '<td>'.$nome_id['0']['0'].'</td>';
                                 }
-                    
-                                }
+                                echo '
+                                <td class="d-flex flex-column gap align-items-center">
+                                    <a href="http://localhost/Projeto_prefeitura/gerenciar.php?consultar_numero='.$value['0'].'&pesquisar_numero=pesquisar" type="button" class="btn btn-warning mt-2">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <form method="POST">
+                                        <input value="'.$value['0'].'" type="hidden" name="excluir_processo-consulta" id="excluir_processo-consulta">
+                                        <button name="botao-excluir-processo" id="botao-excluir-processo" type="submit" class="btn btn-danger mb-2">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </form>
+                                </td></tr>';
                         }
+                    }
+                }else{
+                    $sql = $pdo->prepare("SELECT * FROM `processos` ORDER BY `numero` ASC");
+                    $sql->execute();
+                    $conteudo = $sql->fetchAll();
+                    if($conteudo == null){
+
+                    }else{
+                        foreach($conteudo as $key => $value){
+                            echo '<tr>
+                            <th scope="row">'.$value['0'].'</th>
+                            <td class="align-middle">'.$value['1'].'</td>
+                            <td class="align-middle">'.$value['2'].'</td>
+                            <td class="align-middle">'.$value['3'].'</td>';
+                            $id_demandante = $value['4'];
+                            $sqlNome = $pdo->prepare("SELECT `nome` FROM `pessoas` WHERE `id` = ?");
+                            $sqlNome->execute(array($id_demandante));
+                            $nome_id = $sqlNome->fetchAll(); 
+                                if($nome_id == null){
+                                    echo '<td></td>';
+                                }else{
+                                    echo '<td>'.$nome_id['0']['0'].'</td>';
+                                }
+                                echo '
+                                    <td class="d-flex flex-column align-items-center gap">
+                                        <a href="http://localhost/Projeto_prefeitura/gerenciar.php?consultar_numero='.$value['0'].'&pesquisar_numero=pesquisar"  type="button" class="btn btn-warning mt-2">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        
+                                        <form method="POST">
+                                            <input value="'.$value['0'].'" type="hidden" name="excluir_processo-consulta" id="excluir_processo-consulta">
+                                            <button name="botao-excluir-processo" id="botao-excluir-processo" type="submit" class="btn btn-danger mb-2">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </td>';
+                        }
+                    }
                 }
             ?>
         </tbody>
     </table>
 </div>
+

@@ -1,3 +1,60 @@
+<?php
+    if(isset($_SESSION['modal_excluir-pessoa'])){
+        $_SESSION['modal_excluir-pessoa'] ='false';
+        
+    } 
+
+    if(isset($_POST['cancelar-modal-processo'])){
+        $_SESSION['modal_excluir-processo'] ='false';
+
+    }else if(isset($_POST['confirmar-modal-processo'])){
+        $sql = $pdo->prepare("DELETE FROM `processos` WHERE `numero` = ?");
+        try{
+            $sql->execute(array($_GET['consultar_numero']));
+            $_SESSION['modal_excluir-processo'] ='false';
+            $_SESSION['msg_success_gerenciar'] = 'Pessoa excluida.';
+            unset($_GET['consultar_numero']);
+            unset($id_demandante);
+            unset($descricao);
+            unset($data_processo);
+            unset($prazo);
+            
+        }catch(Exception $e){
+            $_SESSION['modal_excluir-processo'] ='false';
+            $_SESSION['msg_error_gerenciar'] = 'Erro ao excluir pessoa.';
+        }
+    }
+    if(isset($_SESSION['modal_excluir-processo']) && $_SESSION['modal_excluir-processo'] == 'true'){
+        echo '
+        <div id="container-modal-processo" class="absolute z10">
+            <div id="modal-excluir-processo" class="modal-excluir">
+                <div class="header">
+                    <h5>Excluir processo</h5>
+                </div>
+                <div class="body">
+                    <p>Deseja excluir este processo?</p>
+                </div>  
+                <form method="POST" class="footer">
+                    <button type="submit" name="confirmar-modal-processo" value="confirmar-modal-processo" class="btn btn-success">Confirmar</button>
+                    <button type="submit" name="cancelar-modal-processo" value="cancelar-modal-processo" class="btn btn-danger">Cancelar</button>
+                </form>
+            </div>
+        </div>
+        '
+        ;
+    }
+
+
+?>
+<div class="w100 gap d-flex position-absolute top-0 m-5 mt-4 flex-row justify-content-center">
+        <?php
+            if(isset($_SESSION['msg_success_gerenciar'])){
+                echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_gerenciar'].'</p>';
+            }else if(isset($_SESSION['msg_error_gerenciar'])){
+                echo '<p class="alert alert-danger p-2" >'.$_SESSION['msg_error_gerenciar'].'</p>';
+            }
+        ?>
+</div>
 <section class="container text-light">
     <div class="row mt-4">
         <div class="col-6 mx-5 border-bottom d-flex justify-content-center">
@@ -22,12 +79,12 @@
                 </div>
             </form>
         </div>
-        <div class="col-4 mx-4 d-flex justify-content-end">
+        <div class="col-4 mx-4 d-flex justify-content-end z9">
             <div class= "mx-3">
                 <button disabled id="gerenciar_processo" type="button" class="btn btn-warning"><i class="bi bi-pencil-square"> Gerenciar</i></button>
             </div>
             <form method="post">
-                <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_processo"value="excluir">
+                <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_processo" id="excluir_processo" value="excluir" disabled>
             </form>
         </div>
         <div class="col-10 mt-2">
@@ -39,7 +96,7 @@
                 <div class="mt-2">
                     <label class="form-label h6" for="demandante_processo">Nome do demandante:</label>
                     <select class="form-select" name="demandante_processo" id="demandante_processo" disabled>
-                        <option value=""disabled selected></option>
+                        <option value="" selected></option>
                         <?php
                             $sql = $pdo->prepare("SELECT `nome`,`id` FROM `pessoas`");
                             $sql->execute();
@@ -49,7 +106,7 @@
                                     echo '<option value="'.$value['1'].'" selected>'.$value['0'].'</option>';
                                 }else{
                                     echo '<option value="'.$value['1'].'">'.$value['0'].'</option>';
-                                }  
+                                }
                             }
                         ?>
                        
