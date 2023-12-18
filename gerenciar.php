@@ -25,30 +25,53 @@
       if($conteudo == null){
       
       }else{
-      $id_demandante = $conteudo['0']['4'];
-      $descricao = $conteudo['0']['1'];
-      $data_processo = $conteudo['0']['2'];
-      $prazo = $conteudo['0']['3'];
-      $gerenciarBotao = true;
+        $id_demandante = $conteudo['0']['4'];
+        $descricao = $conteudo['0']['1'];
+        $data_processo = $conteudo['0']['2'];
+        $prazo = $conteudo['0']['3'];
+        $gerenciarBotao = true;
       }
     }
   }
 
   if(isset($_POST['processo_enviar'])){
-    $id_demandante = $_POST['demandante_processo'];
-    $descricao = $_POST['descricao_processo'];
-    $data_processo = $_POST['data_atual'];
-    $prazo = $_POST['prazo_processo'];
+    unset($_SESSION['msg_success_gerenciar']);
+    $inputsVazios = 0;
 
-    $sql = $pdo->prepare("UPDATE `processos` SET `descricao` = ?, `data_de_registro` = ?, `prazo` = ?, `id_pessoa` = ? WHERE `numero` = $numero_processo");
-
-    try{
-      $sql->execute(array($descricao, $data_processo, $prazo, $id_demandante));
-      $_SESSION['msg_success_gerenciar'] = 'Processo editado.';
-    }catch(Exception $e){
-      $_SESSION['msg_error_gerenciar'] = 'Erro ao editar processo.';
+    if(isset($_POST['demandante_processo']) && $_POST['demandante_processo'] == ''){
+      $inputsVazios += 1;
     }
-    
+
+    if(!isset($_POST['descricao_processo']) || $_POST['descricao_processo'] == '' || $_POST['descricao_processo'] == null){
+      $inputsVazios += 1;
+    }
+
+    if(!isset($_POST['data_atual']) || $_POST['data_atual'] == null || $_POST['data_atual'] == '0000-00-00'){
+      $inputsVazios += 1;
+    }
+
+    if(!isset($_POST['prazo_processo']) || $_POST['prazo_processo'] == null || $_POST['prazo_processo'] == 0){
+      $inputsVazios += 1;
+    }
+
+    if($inputsVazios > 0){
+      $_SESSION['msg_error_gerenciar'] = 'Erro: dados vazios.';
+    }else{
+      $id_demandante = $_POST['demandante_processo'];
+      $descricao = $_POST['descricao_processo'];
+      $data_processo = $_POST['data_atual'];
+      $prazo = $_POST['prazo_processo'];
+  
+      $sql = $pdo->prepare("UPDATE `processos` SET `descricao` = ?, `data_de_registro` = ?, `prazo` = ?, `id_pessoa` = ? WHERE `numero` = $numero_processo");
+  
+      try{
+        $sql->execute(array($descricao, $data_processo, $prazo, $id_demandante));
+        $_SESSION['msg_success_gerenciar'] = 'Processo editado.';
+      }catch(Exception $e){
+        $_SESSION['msg_error_gerenciar'] = 'Erro ao editar processo.';
+      }
+    }
+ 
   }
 
   if(isset($_POST['excluir_processo']) && isset($_GET['consultar_numero'])){
@@ -83,23 +106,42 @@
     }
   }
   if(isset($_POST['gerPessoa_enviar'])){
-    $nome = $_POST['nome_demandante'];
-    $data_nascimento = $_POST['data_demandante'];
-    $cpf = $_POST['cpf_demandante'];
-    $sexo = $_POST['sexo_demandante'];
-    $cidade = $_POST['cidade_demandante'];
-    $bairro = $_POST['bairro_demandante'];
-    $rua = $_POST['rua_demandante'];
-    $numero = $_POST['numero_demandante'];
-    $complemento = $_POST['complemento_demandante'];
-  
-    $sql = $pdo->prepare("UPDATE `pessoas` SET `nome` = ?, `data_nascimento` = ?, `cpf` = ?, `sexo` = ?, `cidade` = ?, `bairro` = ?, `rua` = ?, `numero` = ?, `complemento` = ? WHERE `id` = $id_pessoa");
+    unset($_SESSION['msg_success_gerenciar']);
+    $inputsVazios = 0;
 
-    try{
-      $sql->execute(array($nome, $data_nascimento, $cpf, $sexo, $cidade, $bairro, $rua, $numero, $complemento));
-      $_SESSION['msg_success_gerenciar'] = 'Pessoa editada.';
-    }catch(Exception $e){
-      $_SESSION['msg_error_gerenciar'] = 'Erro ao editar pessoa.';
+    if(!isset($_POST['nome_demandante']) || $_POST['nome_demandante'] == '' || $_POST['nome_demandante'] == null){
+      $inputsVazios += 1;
+    }
+
+    if(!isset($_POST['data_demandante']) || $_POST['data_demandante'] == null || $_POST['data_demandante'] == '0000-00-00'){
+      $inputsVazios += 1;
+    }
+
+    if(!isset($_POST['cpf_demandante']) || $_POST['cpf_demandante'] == '' || $_POST['cpf_demandante'] == null){
+      $inputsVazios += 1;
+    }
+
+    if($inputsVazios > 0){
+      $_SESSION['msg_error_gerenciar'] = 'Erro: dados vazios.';
+    }else{
+      $nome = $_POST['nome_demandante'];
+      $data_nascimento = $_POST['data_demandante'];
+      $cpf = $_POST['cpf_demandante'];
+      $sexo = $_POST['sexo_demandante'];
+      $cidade = $_POST['cidade_demandante'];
+      $bairro = $_POST['bairro_demandante'];
+      $rua = $_POST['rua_demandante'];
+      $numero = $_POST['numero_demandante'];
+      $complemento = $_POST['complemento_demandante'];
+    
+      $sql = $pdo->prepare("UPDATE `pessoas` SET `nome` = ?, `data_nascimento` = ?, `cpf` = ?, `sexo` = ?, `cidade` = ?, `bairro` = ?, `rua` = ?, `numero` = ?, `complemento` = ? WHERE `id` = $id_pessoa");
+  
+      try{
+        $sql->execute(array($nome, $data_nascimento, $cpf, $sexo, $cidade, $bairro, $rua, $numero, $complemento));
+        $_SESSION['msg_success_gerenciar'] = 'Pessoa editada.';
+      }catch(Exception $e){
+        $_SESSION['msg_error_gerenciar'] = 'Erro ao editar pessoa.';
+      }
     }
   }
 
@@ -124,7 +166,7 @@
     <link rel="shortcut icon" href="src/img/Brasao_Sao_Leopoldo.ico" type="image/x-icon">
   </head>
   <body class="overflow-hidden">
-    <nav class="p-3 navbar navbar-expand-lg bg-dark " data-bs-theme="dark">
+    <nav class="p-2 navbar navbar-expand-lg bg-dark " data-bs-theme="dark">
         <div class="container-fluid">
             <a class="navbar-brand" href=""><i class="bi bi-gear"> Gerenciar | </i></a>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">

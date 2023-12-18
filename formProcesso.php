@@ -1,4 +1,4 @@
-<div class="w100 gap d-flex position-absolute top-0 m-4 flex-row justify-content-center">
+<div class="w100 gap d-flex position-absolute top-0 mx-5 my-4 flex-row justify-content-center">
         <?php
             if(isset($_SESSION['msg_success_cadastro'])){
                 echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_cadastro'].'</p>';
@@ -28,7 +28,7 @@
     </div>
     <div class="mx-3">
         <label class="form-label" for="dataRegistro">Data(Atual)*:</label>
-        <input class="form-control" type="date" name="dataRegistro" id="data" disabled value="<?php echo date('Y-m-d');?>">
+        <input class="form-control" type="date" name="dataRegistro" id="data" value="<?php echo date('Y-m-d');?>">
     </div>
     <div class="mx-3">
         <label class="form-label" for="prazo">Prazo(dias até a demanda expirar)*:</label>

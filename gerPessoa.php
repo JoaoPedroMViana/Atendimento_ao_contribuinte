@@ -46,7 +46,7 @@
     }
 
 ?>
-<div class="w100 gap d-flex position-absolute top-0 m-5 mt-4 flex-row justify-content-center">
+<div class="w100 gap d-flex position-absolute top-0 mx-5 mt-2 flex-row justify-content-center p-100">
         <?php
             if(isset($_SESSION['msg_success_gerenciar'])){
                 echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_gerenciar'].'</p>';
@@ -56,8 +56,8 @@
         ?>
 </div>
 <section class="container text-light">
-    <div class="row mt-4">
-        <div class="col-6 mx-5 border-bottom d-flex">
+    <div class="row mt-2">
+        <div class="col-6 border-bottom d-flex justify-content-start">
             <form>
                 <div class="input-group mb-3">
                     <label class="form-label mt-1 mx-3" for="id">Pesquisar nome:</label>
@@ -79,10 +79,10 @@
                     </div>
                 </div>
             </form>
-        </div>
-        <div class="col-4 mx-4 d-flex justify-content-end z9">
+        </div> 
+        <div class="col-5 mx-4 d-flex justify-content-end z9">
             <div class= mx-3>
-                <button id="gerenciar_pessoa" type="button" class="btn btn-warning" disabled><i class="bi bi-pencil-square"> Gerenciar</i></button>
+                <button id="gerenciar_pessoa" type="button" class="btn btn-warning" disabled><i class="bi bi-pencil-square"> Editar</i></button>
             </div>
             <form method="post">
                 <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_pessoa" id="excluir_pessoa"value="excluir"disabled>

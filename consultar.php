@@ -47,7 +47,7 @@
     <link rel="shortcut icon" href="src/img/Brasao_Sao_Leopoldo.ico" type="image/x-icon">
   </head>
   <body class="overflow-hidden">
-    <nav class="p-3 navbar navbar-expand-lg bg-dark " data-bs-theme="dark">
+    <nav class="p-2 navbar navbar-expand-lg bg-dark " data-bs-theme="dark">
             <div class="container-fluid">
                 <a class="navbar-brand" href=""><i class="bi bi-search"> Consultar | </i></a>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">

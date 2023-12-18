@@ -12,7 +12,7 @@
         try{
             $sql->execute(array($_GET['consultar_numero']));
             $_SESSION['modal_excluir-processo'] ='false';
-            $_SESSION['msg_success_gerenciar'] = 'Pessoa excluida.';
+            $_SESSION['msg_success_gerenciar'] = 'Processo excluida.';
             unset($_GET['consultar_numero']);
             unset($id_demandante);
             unset($descricao);
@@ -21,7 +21,7 @@
             
         }catch(Exception $e){
             $_SESSION['modal_excluir-processo'] ='false';
-            $_SESSION['msg_error_gerenciar'] = 'Erro ao excluir pessoa.';
+            $_SESSION['msg_error_gerenciar'] = 'Erro ao excluir processo.';
         }
     }
     if(isset($_SESSION['modal_excluir-processo']) && $_SESSION['modal_excluir-processo'] == 'true'){
@@ -46,7 +46,7 @@
 
 
 ?>
-<div class="w100 gap d-flex position-absolute top-0 m-5 mt-4 flex-row justify-content-center">
+<div class="w100 gap d-flex position-absolute top-0 m-4 mt-4 flex-row justify-content-center">
         <?php
             if(isset($_SESSION['msg_success_gerenciar'])){
                 echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_gerenciar'].'</p>';
@@ -57,7 +57,7 @@
 </div>
 <section class="container text-light">
     <div class="row mt-4">
-        <div class="col-6 mx-5 border-bottom d-flex justify-content-center">
+        <div class="col-6 border-bottom d-flex justify-content-start">
             <form>
                 <div class="input-group mb-3">
                     <label class="form-label mt-1 mx-3" for="numero">Pesquisar número:</label>
@@ -79,9 +79,9 @@
                 </div>
             </form>
         </div>
-        <div class="col-4 mx-4 d-flex justify-content-end z9">
+        <div class="col-5 mx-5 ml-0 d-flex justify-content-end z9">
             <div class= "mx-3">
-                <button disabled id="gerenciar_processo" type="button" class="btn btn-warning"><i class="bi bi-pencil-square"> Gerenciar</i></button>
+                <button disabled id="gerenciar_processo" type="button" class="btn btn-warning"><i class="bi bi-pencil-square"> Editar</i></button>
             </div>
             <form method="post">
                 <input Style="color:white;"class="btn btn-outline-danger border-light"type="submit" name="excluir_processo" id="excluir_processo" value="excluir" disabled>
@@ -90,11 +90,11 @@
         <div class="col-10 mt-2">
             <form method="post">
                 <div>
-                    <label class="form-label h6" for="numero_processo">Número do processo:</label>
+                    <label class="form-label h6" for="numero_processo">Número do processo*:</label>
                     <input class="form-control" type="number" name="numero_processo" id="numero_processo" value="<?php if(isset($_GET['consultar_numero'])){$numero=$_GET['consultar_numero'];echo $numero;}?>" disabled>
                 </div>
                 <div class="mt-2">
-                    <label class="form-label h6" for="demandante_processo">Nome do demandante:</label>
+                    <label class="form-label h6" for="demandante_processo">Nome do demandante*:</label>
                     <select class="form-select" name="demandante_processo" id="demandante_processo" disabled>
                         <option value="" selected></option>
                         <?php
@@ -113,15 +113,15 @@
                     </select>
                 </div>
                 <div class="mt-2">
-                    <label class="form-label h6" for="descricao_processo">Descrição:</label>
+                    <label class="form-label h6" for="descricao_processo">Descrição*:</label>
                     <textarea class="form-control" name="descricao_processo" id="descricao_processo" disabled><?php if(isset($descricao)){echo $descricao;}?></textarea>
                 </div>
                 <div class="mt-2">
-                    <label class="form-label h6" for="data_atual">Data(de registro):</label>
+                    <label class="form-label h6" for="data_atual">Data(de registro)*:</label>
                     <input class="form-control" type="date" name="data_atual" id="data_atual" value="<?php echo $data_processo;?>" disabled>
                 </div>
                 <div class="mt-2">
-                    <label class="form-label h6" for="prazo_processo">Prazo(dias até a demanda expirar):</label>
+                    <label class="form-label h6" for="prazo_processo">Prazo(dias até a demanda expirar)*:</label>
                     <input class="form-control" type="number" name="prazo_processo" id="prazo_processo" value="<?php echo $prazo?>" disabled>
                 </div>
                 <button class="btn btn-success border border-white mt-2" type="submit" name="processo_enviar" value="Salvar" id="processo_enviar" disabled><i class="bi bi-cloud-download"></i> Salvar</button>

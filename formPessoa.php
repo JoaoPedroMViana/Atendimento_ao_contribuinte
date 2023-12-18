@@ -1,4 +1,4 @@
-    <div class="w100 gap d-flex position-absolute top-0 m-4 flex-row justify-content-center">
+    <div class="w100 gap d-flex position-absolute top-0 m-1 flex-row justify-content-center">
         <?php
             if(isset($_SESSION['msg_success_cadastro'])){
                 echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_cadastro'].'</p>';
@@ -6,9 +6,9 @@
                 echo '<p class="alert alert-danger p-2" >'.$_SESSION['msg_error_cadastro'].'</p>';
             }
         ?> 
-    </div>
-    <form id="formPessoa" class="text-light mt-5" method = "post">
-        <div class="mt-4 mx-3">
+    </div> 
+    <form id="formPessoa" class="text-light mt-4" method = "post">
+        <div class="mt-3 mx-3">
             <label class="form-label" for="nome">Nome*:</label>
             <input class="form-control" type="text" id="nome" name="nome" value="<?php if(isset($_SESSION['nome_pessoa'])){ echo $_SESSION['nome_pessoa'];} ?>"autofocus>
 
@@ -41,10 +41,9 @@
                 </div>
             </div>
         </div>
-        <button class="btn btn-success border border-white m-3"type="submit" name="enviado" value="Salvar"><i class="bi bi-cloud-download"></i> Salvar</button>
+        <button class="btn btn-success border border-white mx-3 my-1"type="submit" name="enviado" value="Salvar"><i class="bi bi-cloud-download"></i> Salvar</button>
     </form>
     <script>
-        //validação form pessoa
        
         let input_nome = document.getElementById('nome');
         let input_data_nascimento = document.getElementById('data_nascimento');
