@@ -146,7 +146,7 @@
         }else{
             sessionStorage.setItem('email_usuario', email.value);
             setTimeout(() => {
-                window.location.href = "http://localhost/Projeto_prefeitura/index.php"
+                window.location.href = "index.php"
             }, 1500);
         }
 

@@ -1,26 +1,41 @@
-    <div class="w100 gap d-flex position-absolute top-0 m-1 flex-row justify-content-center">
+
+    <div class="w100 d-flex position-absolute top-0 mt-1 flex-row justify-content-center z9">
         <?php
             if(isset($_SESSION['msg_success_cadastro'])){
-                echo '<p class="alert alert-success p-2" >'.$_SESSION['msg_success_cadastro'].'</p>';
+                echo '
+                <div class="alert alert-success p-0 d-flex align-items-center">
+                    <p class="m-0 p-1">'.$_SESSION['msg_success_cadastro'].'</p>
+                    <form method="POST">
+                        <input type="hidden" name="fechar-msg" value="fechar">
+                        <input type="submit" name="fechar-msg" value="X" class="btn btn-outline-dark btn-sm m-1">
+                    </form>
+                </div>';
             }else if(isset($_SESSION['msg_error_cadastro'])){
-                echo '<p class="alert alert-danger p-2" >'.$_SESSION['msg_error_cadastro'].'</p>';
+                echo '
+                <div class="alert alert-danger p-0 d-flex align-items-center">
+                    <p class="m-0 p-2">'.$_SESSION['msg_error_cadastro'].'</p>
+                    <form method="POST">
+                        <input type="hidden" name="fechar-msg" value="fechar">
+                        <input type="submit" name="fechar-msg" value="X" class="btn btn-outline-dark btn-sm m-2">
+                    </form>
+                </div>';
             }
-        ?> 
-    </div> 
+        ?>
+</div>
     <form id="formPessoa" class="text-light mt-4" method = "post">
         <div class="mt-3 mx-3">
             <label class="form-label" for="nome">Nome*:</label>
-            <input class="form-control" type="text" id="nome" name="nome" value="<?php if(isset($_SESSION['nome_pessoa'])){ echo $_SESSION['nome_pessoa'];} ?>"autofocus>
+            <input class="form-control" type="text" id="nome" name="nome" value="<?php if(isset($_SESSION['nome_pessoa'])){ echo $_SESSION['nome_pessoa'];} ?>"autofocus required>
 
             <label class="form-label" for="data_nascimento">Data de nascimento*:</label>
-            <input class="form-control" type="date" id="data_nascimento" name="data_nascimento" value="<?php if(isset($_SESSION['data_nascimento_pessoa'])){ echo $_SESSION['data_nascimento_pessoa'];} ?>">
+            <input class="form-control" type="date" id="data_nascimento" name="data_nascimento" value="<?php if(isset($_SESSION['data_nascimento_pessoa'])){ echo $_SESSION['data_nascimento_pessoa'];} ?>" required>
 
             <label class="form-label" for="cpf">CPF*:</label>
-            <input class="form-control" type="text" id="cpf" name="cpf" placeholder="000.000.000-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" maxlength="14" autocomplete="off" value="<?php if(isset($_SESSION['cpf'])){echo $_SESSION['cpf'];} ?>">
+            <input class="form-control" type="text" id="cpf" name="cpf" placeholder="000.000.000-00" pattern="[0-9]{3}.[0-9]{3}.[0-9]{3}-[0-9]{2}" maxlength="14" autocomplete="off" value="<?php if(isset($_SESSION['cpf'])){echo $_SESSION['cpf'];} ?>" required>
         </div>
         <div class="mx-3">
             <label class="form-label" for="sexo">Sexo*:</label>    
-            <select class="form-control" name="sexo" id="sexo">
+            <select class="form-control" name="sexo" id="sexo" required>
                 <option value="<?php if(isset($_SESSION['sexo'])){echo $_SESSION['sexo'];} ?>" disabled selected><?php if(isset($_SESSION['sexo'])){echo $_SESSION['sexo'];} ?></option>
                 <option value="Masculino">Masculino</option>
                 <option value="Feminino">Feminino</option>
@@ -34,7 +49,7 @@
             <input class="form-control mb-1" type="text" name="rua" placeholder="Rua:" value="<?php if(isset($_SESSION['rua'])){echo $_SESSION['rua'];} ?>">
             <div class="row">
                 <div class="col-6">
-                    <input class="form-control mb-1" type="number" name="numero" placeholder="Número:" value="<?php if(isset($_SESSION['numero'])){echo $_SESSION['numero'];} ?>">
+                    <input class="form-control mb-1" id="numero"type="number" name="numero" placeholder="Número:" value="<?php if(isset($_SESSION['numero'])){echo $_SESSION['numero'];} ?>">
                 </div>
                 <div class="col-6">
                     <input class="form-control mb-1" type="text" name="complemento" placeholder="Complemento:" value="<?php if(isset($_SESSION['complemento'])){echo $_SESSION['complemento'];} ?>">
@@ -98,4 +113,5 @@
                 }
             
             });
+
     </script>

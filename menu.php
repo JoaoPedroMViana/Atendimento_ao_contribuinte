@@ -17,9 +17,6 @@
                         <a class="px-5 btn btn-lg btn-info mt-3 text-light" href="cadastro.php">Cadastrar</a>
                     </div>
                     <div>
-                        <a class="px-5 btn btn-lg btn-info mt-4 text-light" href="gerenciar.php">Gerenciar</a>
-                    </div>
-                    <div>
                       <a class="px-5 btn btn-lg btn-info mt-4 mb-3 text-light" href="consultar.php">Consultar</a>
                     </div>
             </div>

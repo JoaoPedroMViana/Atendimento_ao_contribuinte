@@ -7,6 +7,21 @@
     define('PASS', '');
     $pdo = MySql::connect();
 
+    if(isset($_POST['fechar-msg'])){
+        unset($_POST['fechar-msg']);
+        unset($_SESSION['msg_success_cadastro']);
+        unset($_SESSION['msg_error_cadastro']);
+        session_write_close();
+      }
+    
+    if(isset($_SESSION['modal_excluir-processo'])){
+        $_SESSION['modal_excluir-processo'] ='false';
+      }  
+
+    if(isset($_SESSION['modal_excluir-pessoa'])){
+    $_SESSION['modal_excluir-pessoa'] ='false';
+    }  
+
     if(isset($_SESSION['msg_success_gerenciar'])){
         unset($_SESSION['msg_success_gerenciar']);
         session_write_close();
@@ -16,15 +31,8 @@
     }
 
     if(isset($_POST['enviado'])){
-        if(isset($_SESSION['msg_success_cadastro'])){
-            unset($_SESSION['msg_success_cadastro']);
-            session_write_close();
-        }else if(isset($_SESSION['msg_error_cadastro'])){
-            unset($_SESSION['msg_error_cadastro']);
-            session_write_close();
-        }
         $inputsEmBranco = 0;
-        if(!isset($_POST['nome'])){
+        if(!isset($_POST['nome']) || $_POST['nome'] == ''){
             $inputsEmBranco += 1;
         }
         if(!isset($_POST['data_nascimento']) || $_POST['data_nascimento'] == null){
@@ -59,11 +67,14 @@
             $bairro = $_POST['bairro'];
             $rua = $_POST['rua'];
             $numero = $_POST['numero'];
+            if(empty($numero)){
+                $numero = null;
+            }
             $complemento = $_POST['complemento'];
     
             $sql = $pdo->prepare("INSERT INTO `pessoas` VALUES(null, ?,?,?,?,?,?,?,?,?)");
             try{
-                $sql->execute(array($nome,$dataNascimento,$cpf,$sexo, $cidade, $bairro, $rua, $numero, $complemento));
+                $sql->execute(array($nome,$dataNascimento,$cpf, $sexo, $cidade, $bairro, $rua, $numero, $complemento));
                 $_SESSION['msg_success_cadastro'] = 'Pessoa cadastrada.';
                 unset($_SESSION['nome_pessoa']);
                 unset($_SESSION['data_nascimento_pessoa']);
@@ -80,13 +91,6 @@
             } 
         }
     }else if(isset($_POST['confirmar'])){
-        if(isset($_SESSION['msg_success_cadastro'])){
-            unset($_SESSION['msg_success_cadastro']);
-            session_write_close();
-        }else if(isset($_SESSION['msg_error_cadastro'])){
-            unset($_SESSION['msg_error_cadastro']);
-            session_write_close();
-        }
 
         $inputsEmBranco = 0;
         if(!isset($_POST['descricao']) || $_POST['descricao'] == '' || $_POST['descricao'] == null){
@@ -146,12 +150,6 @@
             <a class="navbar-brand" href=""><i class="bi bi-file-earmark-text"> Cadastrar | </i></a>
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="gerenciar.php">Gerenciar</a>
-                </div>
-                <div>
-                    <i class="text-secondary">/</i>
-                </div>
-                <div class="navbar-nav">
                     <a class="nav-link" href="consultar.php">Consultar</a>
                 </div>
             </div>
@@ -166,7 +164,7 @@
     <section class="container-fluid bg-secondary">
         <div class="row">
             <div class="text-center align-items-center col-4 vh-100 bg-light">
-                    <form class="mt-5 mb-3" method="post">
+                    <form class="mt-5 mb-3" method="get">
                         <div class="mb-3">
                             <button class="px-5 btn btn-primary"type="submit" name="pessoa"value="Pessoa"><i class="bi bi-person-add"> Pessoa</i></button>
                         </div>
@@ -180,7 +178,7 @@
             </div>
             <div class="col-8 position-relative">
                 <?php
-                    if(isset($_POST['pessoa'])){
+                    if(isset($_GET['pessoa'])){
                         unset($_SESSION['nome_pessoa']);
                         unset($_SESSION['data_nascimento_pessoa']);
                         unset($_SESSION['cpf']);
@@ -190,35 +188,15 @@
                         unset($_SESSION['rua']);
                         unset($_SESSION['numero']);
                         unset($_SESSION['complemento']);
-                        if(isset($_SESSION['msg_success_cadastro'])){
-                            unset($_SESSION['msg_success_cadastro']);
-                            session_write_close();
-                            include('formPessoa.php');
-                        }else if(isset($_SESSION['msg_error_cadastro'])){
-                            unset($_SESSION['msg_error_cadastro']);
-                            session_write_close();
-                            include('formPessoa.php');
-                        }else{
-                            include('formPessoa.php');
-                        }
+                        include('formPessoa.php');
 
                     }else if(isset($_POST['enviado'])){
                         include('formPessoa.php');
 
-                    }else if(isset($_POST['processo'])){
+                    }else if(isset($_GET['processo'])){
                         unset($_SESSION['descricao']);
-                        unset($_SESSION['prazo']);
-                        if(isset($_SESSION['msg_success_cadastro'])){
-                            unset($_SESSION['msg_success_cadastro']);
-                            session_write_close();
-                            include('formProcesso.php');
-                        }else if(isset($_SESSION['msg_error_cadastro'])){
-                            unset($_SESSION['msg_error_cadastro']);
-                            session_write_close();
-                            include('formProcesso.php');
-                        }else{
-                            include('formProcesso.php');
-                        }
+                        unset($_SESSION['prazo']);          
+                        include('formProcesso.php');
 
                     }else if(isset($_POST['confirmar'])){
                         include('formProcesso.php');
